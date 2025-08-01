@@ -1,0 +1,14 @@
+class Solution:
+    def majorityElement(self, nums):
+        ans = None
+        count = 0
+        for num in nums:
+            if count == 0:
+                ans = num
+                count = 1
+            elif num == ans:
+                count += 1
+            else:
+                count -= 1
+        # This return is now correctly inside the function
+        return ans
