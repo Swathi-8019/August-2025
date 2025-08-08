@@ -1,0 +1,50 @@
+class Trie:
+    def __init__(self):
+        self.tree = {}
+
+    def insert(self, num: int):
+        b = "0" * (32 - num.bit_length()) + bin(num)[2:]
+        curr = self.tree
+        for ch in b:
+            if ch not in curr:
+                curr[ch] = {}
+            curr = curr[ch]
+
+    def search(self, num):
+        if not self.tree:
+            return -1
+        current_dict = self.tree
+        bits = []
+        b = bin(num)[2:]
+        b = "0" * (32 - len(b)) + b
+        for i in b:
+            opposite = "1" if i == "0" else "0"
+            if opposite in current_dict:
+                bits.append("1")
+                current_dict = current_dict[opposite]
+            else:
+                bits.append("0")
+                current_dict = current_dict[i]
+        return int("".join(bits), 2)
+
+
+class Solution:
+    def maximizeXor(self, nums: List[int], queries: List[List[int]]) -> List[int]:
+        trie = Trie()
+        new = []
+        i = 0
+        for x, m in queries:
+            new.append([x, m, i])
+            i += 1
+        new.sort(key=lambda x: x[1])
+        nums.sort()
+        res = []
+        j = 0
+        for x, m, i in new:
+            while j < len(nums) and nums[j] <= m:
+                trie.insert(nums[j])
+                j += 1
+            t = trie.search(x)
+            res.append([i, t])
+        res.sort()
+        return [val for i, val in res]
